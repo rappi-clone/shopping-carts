@@ -1,11 +1,12 @@
-var mongoose = require('mongoose');
-var url = "mongodb://localhost:27017/shopping_carts";
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
 
-mongoose.connect(url, function(err) {
-  if (err) throw err;
+MongoClient.connect(url, function(err, db) {
+  if (err) throw console.log(err);
   var dbo = db.db("shopping_carts");
-  dbo.collection("store").findOne({}, function(err, result) {
+  dbo.collection("store").find({}).toArray(function(err, result) {
     if (err) throw err;
-    console.log(result.name);
+    console.log(result);
+    db.close();
   });
 });
