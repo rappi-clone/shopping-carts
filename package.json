@@ -1,0 +1,32 @@
+{
+  "name": "shopping-carts",
+  "version": "1.0.0",
+  "description": "shopping cart service",
+  "main": "index.js",
+  "scripts": {
+    "setup": "DEBUG=carrito:* node setup.js",
+    "lint": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codehubteam-g1/shopping-carts.git"
+  },
+  "author": "Oscar Ivan Gomez Zamudio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codehubteam-g1/shopping-carts/issues"
+  },
+  "homepage": "https://github.com/codehubteam-g1/shopping-carts#readme",
+  "devDependencies": {
+    "standard": "^12.0.1"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "inquirer": "^6.4.1",
+    "mysql": "^2.17.1",
+    "mysql2": "^1.6.5",
+    "mysqlw": "^0.13.6",
+    "sequelize": "^5.8.12"
+  }
+}
