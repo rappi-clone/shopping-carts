@@ -5,10 +5,9 @@ const setupDatabase = require('../lib/db')
 module.exports = function setupShoppingCartModel (config) {
   const sequelize = setupDatabase(config)
   return sequelize.define('shoppingcart', {
-    id: {
+    userId:{
       type: Sequelize.INTEGER,
-      allowNull: false,
-      primaryKey: true
+      allowNull: false
     }
   })
 }

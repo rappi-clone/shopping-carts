@@ -9,7 +9,10 @@ async function setup () {
     host: process.env.DB_HOST || 'localhost',
     dialect: 'mysql',
     logging: s => debug(s),
-    setup: true
+    setup: true,
+    define: {
+      underscored: true
+    }
   }
 
   await db(config).catch(handleFatalError)

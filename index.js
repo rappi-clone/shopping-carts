@@ -2,24 +2,24 @@
 
 const setupDatabase = require('./lib/db')
 const setupShoppingCart = require('./lib/shoppingcart')
-const defaults = require('defautls')
+//const defaults = require('defautls')
 
 // Models
 const setupShoppinCartModel = require('./models/shoppingcart')
 const setupCartProductModel = require('./models/cartproduct')
 
 module.exports = async function (config) {
-  config = defaults(config, {
-    dialect: 'slqite',
-    pool: {
-      max: 10,
-      min: 0,
-      idle: 1000
-    },
-    query: {
-      raw: true
-    }
-  })
+  // config = defaults(config, {
+  //   dialect: 'slqite',
+  //   pool: {
+  //     max: 10,
+  //     min: 0,
+  //     idle: 1000
+  //   },
+  //   query: {
+  //     raw: true
+  //   }
+  // })
 
   const sequelize = setupDatabase(config)
 
