@@ -13,9 +13,9 @@ module.exports = database => {
       }
 
       let userId = req.headers.id
-      
+
       const db = await database;
-      let shoppingCart = await db.ShoppingCart.create(req.body)
+      await db.ShoppingCart.create({userId})
 
       res.json({
         success: true
