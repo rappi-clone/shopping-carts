@@ -12,6 +12,8 @@ module.exports = database => {
         throw ({ error: new Error('Debes estar logeado como cliente para poder crear un carrito'), status: 401 })
       }
 
+      let userId = req.headers.id
+      
       const db = await database;
       let shoppingCart = await db.ShoppingCart.create(req.body)
 
@@ -23,9 +25,9 @@ module.exports = database => {
     }
   })
 
-  router.get('/getCartProducts/:id', async (req, res, next) => {
+  router.get('/getCartProducts', async (req, res, next) => {
       try {
-        let userId = req.params.id
+        let userId = req.headers.id
 
         const db = await database;
         let shoppingCart = await db.ShoppingCart.findOne({where: {userId}})
