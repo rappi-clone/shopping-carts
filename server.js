@@ -2,7 +2,7 @@
 
 const Express = require('express');
 const app = Express();
-const PORT = 4001;
+const PORT = 6001;
 const database = require('./db/database')();
 const routes = require('./routes/routes')(database)
 
