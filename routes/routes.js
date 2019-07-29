@@ -15,7 +15,7 @@ module.exports = database => {
       let userId = req.headers.id
 
       const db = await database;
-      await db.ShoppingCart.create({userId})
+      await db.ShoppingCart.create({ userId })
 
       res.json({
         success: true
@@ -26,142 +26,179 @@ module.exports = database => {
   })
 
   router.get('/getCartProducts', async (req, res, next) => {
-      try {
-        let userId = req.headers.id
-
-        const db = await database;
-        let shoppingCart = await db.ShoppingCart.findOne({where: {userId}})
-
-        if(shoppingCart === null) next({ error: new Error("El carrito que buscas no existe"), status: 401 })
-
-        let cartProducts = await shoppingCart.getCartProducts()
-        
-        res.json({
-          cartProducts
-        });
-      } catch (error) {
-        ErrorHandler(error, next)
+    try {
+      if (req.headers.usertype != 'client') {
+        throw ({ error: new Error('Debes estar logeado como cliente para leer los productos del carrito'), status: 401 })
       }
-    })
 
-    // router.get('/getAllStores', async (req, res, next) => {
-    //   try {
-    //     const db = await database;
-    //     let stores = await db.Store.findAll()
-    //     res.json({
-    //       stores
-    //     });
-    //   } catch (error) {
-    //     ErrorHandler(error, next)
-    //   }
-    // })
+      let userId = req.headers.id
 
-    // router.get('/getStoreByStoreId/:id', async (req, res, next) => {
-    //   try {
-    //     let storeId = req.params.id
-    //     const db = await database;
-    //     let store = await db.Store.findByPk(storeId)
-    //     res.json({
-    //       store
-    //     });
-    //   } catch (error) {
-    //     ErrorHandler(error, next)
-    //   }
-    // })
+      const db = await database;
+      let shoppingCart = await db.ShoppingCart.findOne({ where: { userId } })
 
-    // router.post('/createProductInStore/:id', async (req, res, next) => {
-    //   try {
-    //     if (req.headers.usertype != 'administrator') {
-    //       throw ({ error: new Error('Debes estar logeado como administrador para poder crear un producto'), status: 401 })
-    //     }
-    //     let storeId = req.params.id
+      if (shoppingCart === null) next({ error: new Error("El carrito que buscas no existe"), status: 401 })
 
-    //     const db = await database;
-    //     let store = await db.Store.findByPk(storeId)
+      let cartProducts = await shoppingCart.getCartProducts()
 
-    //     if(store === null) next({ error: new Error("La tienda en la que quieres crear el producto no existe"), status: 401 })
+      res.json({
+        cartProducts
+      });
+    } catch (error) {
+      ErrorHandler(error, next)
+    }
+  })
 
-    //     await store.createProduct(req.body)
+  router.post('/setCartProducts', async (req, res, next) => {
+    try {
+      if (req.headers.usertype != 'client') {
+        throw ({ error: new Error('Debes estar logeado como cliente para agregar productos al carrito'), status: 401 })
+      }
 
-    //     res.json({
-    //       success: true
-    //     });
-    //   } catch (error) {
-    //     ErrorHandler(error, next)
-    //   }
-    // })
+      let userId = req.headers.id
 
-    // router.get('/getStoreProducts/:id', async (req, res, next) => {
-    //   try {
-    //     let storeId = req.params.id
+      const db = await database;
+      let shoppingCart = await db.ShoppingCart.findOne({ where: { userId } })
 
-    //     const db = await database
-    //     let store = await db.Store.findByPk(storeId)
+      if (shoppingCart === null) next({ error: new Error("El carrito que buscas no existe"), status: 401 })
 
-    //     if(store === null) next({ error: new Error("La tienda que buscas no existe"), status: 401 })
+      let currentCartProducts = await shoppingCart.getCartProducts()
 
-    //     let products = await store.getProducts()
+      console.log(typeof(currentCartProducts))
+      console.log(currentCartProducts)
+      currentCartProducts.forEach(async product => {
+        await product.destroy()
+      });
 
-    //     res.json({
-    //       products
-    //     });
-    //   } catch (error) {
-    //     ErrorHandler(error, next)
-    //   }
-    // })
+      req.body.cartProducts.forEach(async product => {
+        await shoppingCart.createCartProduct(product)
+      });
 
-    // router.get('/getProductByProductId/:id', async (req, res, next) => {
-    //   try {
-    //     let productId = req.params.id
-    //     const db = await database
-    //     let product = await db.Product.findByPk(productId)
-    //     res.json({
-    //       product
-    //     });
-    //   } catch (error) {
-    //     ErrorHandler(error, next)
-    //   }
-    // })
+      res.json({
+        success: true
+      });
+    } catch (error) {
+      ErrorHandler(error, next)
+    }
+  })
 
-    // router.post('/deleteProduct/:id', async (req, res, next) => {
-    //   try {
-    //     let productId = req.params.id
-    //     const db = await database
-    //     let product = await db.Product.findByPk(productId)
+  // router.get('/getAllStores', async (req, res, next) => {
+  //   try {
+  //     const db = await database;
+  //     let stores = await db.Store.findAll()
+  //     res.json({
+  //       stores
+  //     });
+  //   } catch (error) {
+  //     ErrorHandler(error, next)
+  //   }
+  // })
 
-    //     if(product === null) next({ error: new Error("El producto que buscas no existe"), status: 401 })
+  // router.get('/getStoreByStoreId/:id', async (req, res, next) => {
+  //   try {
+  //     let storeId = req.params.id
+  //     const db = await database;
+  //     let store = await db.Store.findByPk(storeId)
+  //     res.json({
+  //       store
+  //     });
+  //   } catch (error) {
+  //     ErrorHandler(error, next)
+  //   }
+  // })
 
-    //     await product.destroy()
+  // router.post('/createProductInStore/:id', async (req, res, next) => {
+  //   try {
+  //     if (req.headers.usertype != 'administrator') {
+  //       throw ({ error: new Error('Debes estar logeado como administrador para poder crear un producto'), status: 401 })
+  //     }
+  //     let storeId = req.params.id
 
-    //     res.json({
-    //       success: true
-    //     });
-    //   } catch (error) {
-    //     ErrorHandler(error, next)
-    //   }
-    // })
+  //     const db = await database;
+  //     let store = await db.Store.findByPk(storeId)
 
-    // router.post('/buyProduct/:id', async (req, res, next) => {
-    //   try {
-    //     let productId = req.params.id
-    //     const db = await database
-    //     let product = await db.Product.findByPk(productId)
-    //     if(product === null) next({ error: new Error("El producto que buscas no existe"), status: 401 })
+  //     if(store === null) next({ error: new Error("La tienda en la que quieres crear el producto no existe"), status: 401 })
 
-    //     let currentQuantity = product.availableQuantity
-    //     let availableQuantity = currentQuantity-req.body.quantity
+  //     await store.createProduct(req.body)
 
-    //     if(req.body.quantity > currentQuantity) next({ error: new Error("No puedes comprar una cantidad mayor a la disponible"), status: 401 })
+  //     res.json({
+  //       success: true
+  //     });
+  //   } catch (error) {
+  //     ErrorHandler(error, next)
+  //   }
+  // })
 
-    //     await product.update({availableQuantity})
+  // router.get('/getStoreProducts/:id', async (req, res, next) => {
+  //   try {
+  //     let storeId = req.params.id
 
-    //     res.json({
-    //       success: true
-    //     });
-    //   } catch (error) {
-    //     ErrorHandler(error, next)
-    //   }
-    // })
+  //     const db = await database
+  //     let store = await db.Store.findByPk(storeId)
 
-    return router;
-  }
+  //     if(store === null) next({ error: new Error("La tienda que buscas no existe"), status: 401 })
+
+  //     let products = await store.getProducts()
+
+  //     res.json({
+  //       products
+  //     });
+  //   } catch (error) {
+  //     ErrorHandler(error, next)
+  //   }
+  // })
+
+  // router.get('/getProductByProductId/:id', async (req, res, next) => {
+  //   try {
+  //     let productId = req.params.id
+  //     const db = await database
+  //     let product = await db.Product.findByPk(productId)
+  //     res.json({
+  //       product
+  //     });
+  //   } catch (error) {
+  //     ErrorHandler(error, next)
+  //   }
+  // })
+
+  // router.post('/deleteProduct/:id', async (req, res, next) => {
+  //   try {
+  //     let productId = req.params.id
+  //     const db = await database
+  //     let product = await db.Product.findByPk(productId)
+
+  //     if(product === null) next({ error: new Error("El producto que buscas no existe"), status: 401 })
+
+  //     await product.destroy()
+
+  //     res.json({
+  //       success: true
+  //     });
+  //   } catch (error) {
+  //     ErrorHandler(error, next)
+  //   }
+  // })
+
+  // router.post('/buyProduct/:id', async (req, res, next) => {
+  //   try {
+  //     let productId = req.params.id
+  //     const db = await database
+  //     let product = await db.Product.findByPk(productId)
+  //     if(product === null) next({ error: new Error("El producto que buscas no existe"), status: 401 })
+
+  //     let currentQuantity = product.availableQuantity
+  //     let availableQuantity = currentQuantity-req.body.quantity
+
+  //     if(req.body.quantity > currentQuantity) next({ error: new Error("No puedes comprar una cantidad mayor a la disponible"), status: 401 })
+
+  //     await product.update({availableQuantity})
+
+  //     res.json({
+  //       success: true
+  //     });
+  //   } catch (error) {
+  //     ErrorHandler(error, next)
+  //   }
+  // })
+
+  return router;
+}

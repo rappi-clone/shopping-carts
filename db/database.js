@@ -10,7 +10,7 @@ const config = {
     password: process.env.DB_PASS || '',
     host: process.env.DB_HOST || '',
     dialect: 'postgres',
-    setup: true,
+    setup: false,
     logging: console.log,
     define: {
         underscored: true,
