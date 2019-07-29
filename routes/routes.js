@@ -6,22 +6,22 @@ const ErrorHandler = require('../db/lib/errorHandler')
 module.exports = database => {
   const router = Express.Router();
 
-  // router.post('/createStore', async (req, res, next) => {
-  //   try {
-  //     if (req.headers.usertype != 'administrator') {
-  //       throw ({ error: new Error('Debes estar logeado como administrador para poder crear una tienda'), status: 401 })
-  //     }
+  router.post('/createShoppingCart', async (req, res, next) => {
+    try {
+      if (req.headers.usertype != 'client') {
+        throw ({ error: new Error('Debes estar logeado como cliente para poder crear un carrito'), status: 401 })
+      }
 
-  //     const db = await database;
-  //     let store = await db.Store.create(req.body)
+      const db = await database;
+      let shoppingCart = await db.ShoppingCart.create(req.body)
 
-  //     res.json({
-  //       success: true
-  //     });
-  //   } catch (error) {
-  //     ErrorHandler(error, next)
-  //   }
-  // })
+      res.json({
+        success: true
+      });
+    } catch (error) {
+      ErrorHandler(error, next)
+    }
+  })
 
   // router.get('/getAllStores', async (req, res, next) => {
   //   try {
