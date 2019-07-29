@@ -4,7 +4,7 @@ const Sequelize = require('sequelize')
 
 module.exports = sequelize => {
 
-  let shoppingCartModel = sequelize.define('shoppingCart', {
+  let shoppingCartModel = sequelize.define('shopping_carts', {
     userId: {
       type: Sequelize.INTEGER,
       allowNull: false,

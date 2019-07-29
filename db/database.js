@@ -34,7 +34,7 @@ module.exports = async function () {
     const ShoppingCart = SetupShoppingCartModel(sequelize)
     const CartProduct = SetupCartProductModel(sequelize)
 
-    ShoppingCart.hasMany(CartProduct, { onDelete: 'CASCADE'})
+    ShoppingCart.hasMany(CartProduct, { onDelete: 'CASCADE', as: 'CartProducts'})
     CartProduct.belongsTo(ShoppingCart)
 
     if (config.setup) sequelize.sync({ force: true, logging: console.log })
