@@ -4,6 +4,10 @@ const Sequelize = require('sequelize')
 
 module.exports = sequelize => {
   let cartProductModel = sequelize.define('cartProduct', {
+    productId: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
     quantity: {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -13,5 +17,5 @@ module.exports = sequelize => {
     }
   })
 
-  return productModel
+  return cartProductModel
 }
