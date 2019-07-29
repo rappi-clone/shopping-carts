@@ -62,9 +62,6 @@ module.exports = database => {
       if (shoppingCart === null) next({ error: new Error("El carrito que buscas no existe"), status: 401 })
 
       let currentCartProducts = await shoppingCart.getCartProducts()
-
-      console.log(typeof(currentCartProducts))
-      console.log(currentCartProducts)
       currentCartProducts.forEach(async product => {
         await product.destroy()
       });
@@ -73,6 +70,32 @@ module.exports = database => {
         await shoppingCart.createCartProduct(product)
       });
 
+      res.json({
+        success: true
+      });
+    } catch (error) {
+      ErrorHandler(error, next)
+    }
+  })
+
+  router.post('/deleteCartProducts', async (req, res, next) => {
+    try {
+      if (req.headers.usertype != 'client') {
+        throw ({ error: new Error('Debes estar logeado como cliente para modificar el carrito'), status: 401 })
+      }
+
+      let userId = req.headers.id
+
+      const db = await database;
+      let shoppingCart = await db.ShoppingCart.findOne({ where: { userId } })
+
+      if (shoppingCart === null) next({ error: new Error("El carrito que buscas no existe"), status: 401 })
+
+      let currentCartProducts = await shoppingCart.getCartProducts()
+      currentCartProducts.forEach(async product => {
+        await product.destroy()
+      });
+      
       res.json({
         success: true
       });
