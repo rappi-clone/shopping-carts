@@ -45,6 +45,7 @@ module.exports = (error, next) => {
         // if (error.message.includes('invalid input syntax for type numeric:')) next({ error: new Error('Debes ingresar un precio válido'), status: 401 })
         // if (error.message.includes('invalid input syntax for type time:')) next({ error: new Error('Debes ingresar una hora válida'), status: 401 })
         // if (error.message.includes('invalid input syntax for integer:')) next({ error: new Error('Debes ingresar una cantidad disponible válida'), status: 401 })
-        else next({ error: new Error(error.message), status: 500 })
+        // else 
+        next({ error: new Error(error.message), status: 500 })
     }
 }
