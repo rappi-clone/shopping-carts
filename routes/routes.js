@@ -123,7 +123,7 @@ module.exports = database => {
     }
   })
 
-  router.post('/deleteCartProduct', async (req, res, next) => {
+  router.post('/reduceCartProduct', async (req, res, next) => {
     try {
       if (req.headers.usertype != 'client') {
         throw ({ error: new Error('Debes estar logeado como cliente para agregar productos al carrito'), status: 401 })
@@ -152,6 +152,34 @@ module.exports = database => {
     }
   })
 
+  router.post('/deleteCartProduct', async (req, res, next) => {
+    try {
+      if (req.headers.usertype != 'client') {
+        throw ({ error: new Error('Debes estar logeado como cliente para agregar productos al carrito'), status: 401 })
+      }
+
+      let userId = req.headers.id
+
+      const db = await database;
+      let shoppingCart = await db.ShoppingCart.findOne({ where: { userId } })
+
+      if (shoppingCart === null) next({ error: new Error("El carrito que buscas no existe"), status: 401 })
+
+      let currentCartProducts = await shoppingCart.getCartProducts()
+
+      for (let i = 0; i < currentCartProducts.length; i++) {
+        if (currentCartProducts[i].productId === req.body.productId) {
+          await currentCartProducts[i].destroy()
+        }
+      }
+
+      res.json({
+        success: true
+      });
+    } catch (error) {
+      ErrorHandler(error, next)
+    }
+  })
 
   router.post('/deleteCartProducts', async (req, res, next) => {
     try {
