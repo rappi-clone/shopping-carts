@@ -38,7 +38,7 @@ module.exports = database => {
 
       if (shoppingCart === null) next({ error: new Error("El carrito que buscas no existe"), status: 401 })
 
-      let cartProducts = await shoppingCart.getCartProducts()
+      let cartProducts = await shoppingCart.getCartProducts({ order: [['id', 'ASC']] })
 
       res.json({
         cartProducts
@@ -140,7 +140,8 @@ module.exports = database => {
 
       for (let i = 0; i < currentCartProducts.length; i++) {
         if (currentCartProducts[i].productId === req.body.productId) {
-          await currentCartProducts[i].update({ quantity: (currentCartProducts[i].quantity - 1) })
+          if (currentCartProducts[i].quantity === 1) await currentCartProducts[i].destroy()
+          else await currentCartProducts[i].update({ quantity: (currentCartProducts[i].quantity - 1) })
         }
       }
 
